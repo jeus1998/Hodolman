@@ -152,3 +152,34 @@ MockHttpServletResponse:
    Redirected URL = null
           Cookies = []
 ```
+
+### MockMvc static import 
+
+static import 전 
+```java
+@Test
+@DisplayName("/posts 요청시 Hello World 출력")
+void test() throws Exception {
+    // expected
+    mockMvc.perform(MockMvcRequestBuilders.get("/posts"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().string("Hello World"))
+            .andDo(MockMvcResultHandlers.print());
+}
+```
+- `MockMvcRequestBuilders`
+- `MockMvcResultMatchers`
+- `MockMvcResultHandlers`
+
+static import 후
+```java
+@Test
+@DisplayName("/posts 요청시 Hello World 출력")
+void test() throws Exception {
+    // expected
+    mockMvc.perform(get("/posts"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("Hello World"))
+            .andDo(print());
+}
+```
