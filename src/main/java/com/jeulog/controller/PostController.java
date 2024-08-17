@@ -17,19 +17,8 @@ import java.util.*;
 @RestController
 public class PostController {
     @PostMapping("/posts")
-    public Map<String, String> get(@Valid @RequestBody PostCreate dto, BindingResult result){
+    public Map<String, String> get(@Valid @RequestBody PostCreate dto){
         log.info("dto={}", dto);
-
-        if(result.hasErrors()){
-            Map<String, String> error = new HashMap<>();
-            List<FieldError> fieldErrors = result.getFieldErrors();
-            for (FieldError fieldError : fieldErrors) {
-                String fieldName = fieldError.getField();
-                String errorMessage = fieldError.getDefaultMessage();
-                error.put(fieldName, errorMessage);
-            }
-            return error;
-        }
         return Map.of();
     }
 }
