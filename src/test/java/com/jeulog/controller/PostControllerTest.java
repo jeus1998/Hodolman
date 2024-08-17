@@ -60,6 +60,7 @@ class PostControllerTest {
                 .andDo(print());
     }
     @Test
+
     @DisplayName("/post 요청시 title 필수")
     void test4() throws Exception{
         mockMvc.perform(
