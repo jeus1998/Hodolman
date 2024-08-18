@@ -3,6 +3,7 @@ package com.jeulog.service;
 import com.jeulog.domain.Post;
 import com.jeulog.repository.PostRepository;
 import com.jeulog.request.PostCreate;
+import com.jeulog.response.PostResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +48,9 @@ class PostServiceTest {
         postRepository.save(post);
 
         // when
-        Post findPost = postService.get(post.getId());
+        PostResponse response = postService.get(post.getId());
 
         // then
-        assertThat(findPost).isEqualTo(post);
+        assertThat(response.getTitle()).isEqualTo(post.getTitle());
     }
 }
