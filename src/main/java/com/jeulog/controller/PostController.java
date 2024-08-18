@@ -30,4 +30,8 @@ public class PostController {
         // Case3. 응답 필요 없음 -> 클라이언트에서 모든 POST(글) 데이터 context 잘 관리함
         return postService.write(request);
     }
+    @GetMapping("/posts{postId}")
+    public Post get(@PathVariable(name = "postId") Long id){
+        return postService.get(id);
+    }
 }
