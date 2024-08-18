@@ -2,6 +2,7 @@ package com.jeulog.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -13,6 +14,7 @@ public class Post {
     private String title;
     @Lob
     private String content;
+    @Builder
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
