@@ -27,10 +27,10 @@ public class ExceptionController {
                 .message("잘못된 요청입니다.")
                 .build();
 
-        List<FieldError> fieldErrors = e.getFieldErrors();
-        for (FieldError fieldError : fieldErrors) {
-            response.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
-        }
+        e.getFieldErrors().stream().forEach(o -> {
+            response.addValidation(o.getField(), o.getDefaultMessage());
+        });
+
         return response;
     }
 }
