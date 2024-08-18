@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.assertj.core.api.Assertions.*;
 
-// @Transactional
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 // WebMvcTest
@@ -67,7 +67,8 @@ class PostControllerTest {
                         .content(json)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("{}"))
+                .andExpect(jsonPath("$.title").value("제목입니다."))
+                .andExpect(jsonPath("$.content").value("내용입니다."))
                 .andDo(print());
     }
     @Test
@@ -115,6 +116,26 @@ class PostControllerTest {
         List<Post> result = postRepository.findAll();
         assertThat(result).extracting("title")
                 .containsExactly("제목입니다.");
+    }
+    @Test
+    @DisplayName("글 1개 조회")
+    void test5() throws Exception{
+        // given
+        Post post = Post.builder()
+                .title("foo")
+                .content("bar")
+                .build();
+
+        postRepository.save(post);
+
+        // expected
+        mockMvc.perform(get("/posts/{postId}", post.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("foo"))
+                .andExpect(jsonPath("$.content").value("bar"))
+                .andExpect(jsonPath("$.id").value(post.getId()))
+                .andDo(print());
     }
 
 }
