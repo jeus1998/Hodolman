@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    public void write(PostCreate postCreate){
+    public Post write(PostCreate postCreate){
         // postCreate -> Entity
         Post post = Post
                 .builder()
@@ -20,6 +20,6 @@ public class PostService {
                 .content(postCreate.getContent())
                 .build();
 
-        postRepository.save(post);
+        return postRepository.save(post);
     }
 }
