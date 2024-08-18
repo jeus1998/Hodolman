@@ -7,12 +7,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class PostServiceTest {
     @Autowired
     private PostService postService;
@@ -35,5 +35,21 @@ class PostServiceTest {
         List<Post> result = postRepository.findAll();
              assertThat(result).extracting("title")
                      .containsExactly("제목");
+    }
+    @Test
+    @DisplayName("글 1개 조회")
+    void test2(){
+        // given
+        Post post = Post.builder()
+                .title("제목1")
+                .content("내용1")
+                .build();
+        postRepository.save(post);
+
+        // when
+        Post findPost = postService.get(post.getId());
+
+        // then
+        assertThat(findPost).isEqualTo(post);
     }
 }
