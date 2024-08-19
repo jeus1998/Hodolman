@@ -69,7 +69,7 @@ class PostServiceTest {
         postRepository.save(post2);
 
         // when
-        List<Post> posts = postService.getList();
+        List<PostResponse> posts = postService.getList();
 
         // then
         assertThat(posts.size()).isEqualTo(2);
