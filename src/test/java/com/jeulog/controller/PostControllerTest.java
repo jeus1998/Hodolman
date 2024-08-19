@@ -146,12 +146,11 @@ class PostControllerTest {
                 .title("foo")
                 .content("bar")
                 .build();
-        postRepository.save(post);
         Post post2 = Post.builder()
                 .title("foo2")
                 .content("bar2")
                 .build();
-        postRepository.save(post2);
+        postRepository.saveAll(List.of(post, post2));
 
         // expected
         mockMvc.perform(get("/posts")
