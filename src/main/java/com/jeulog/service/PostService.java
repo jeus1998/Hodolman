@@ -7,6 +7,7 @@ import com.jeulog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -39,9 +40,9 @@ public class PostService {
                 .build();
     }
 
-    public List<PostResponse> getList(int page) {
+    public List<PostResponse> getList(Pageable pageable) {
         return postRepository.findAll(
-                PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "id")))
+                 pageable)
                 .stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
