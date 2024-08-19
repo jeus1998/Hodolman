@@ -182,7 +182,7 @@ class PostControllerTest {
                .collect(Collectors.toList());
         postRepository.saveAll(requestPosts);
         // Pageable 파라미터 ex page=1&size=10&sort=id,desc
-        mockMvc.perform(get("/posts?page=1&size=10")
+        mockMvc.perform(get("/posts")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(10))
