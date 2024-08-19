@@ -16,6 +16,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                  .selectFrom(post)
                  .limit(10)
                  .offset((page - 1) * 10)
+                 .orderBy(post.id.desc())
                  .fetch();
     }
 }
