@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jeulog.domain.Post;
 import com.jeulog.repository.PostRepository;
 import com.jeulog.request.PostCreate;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,6 +136,35 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.title").value("foo"))
                 .andExpect(jsonPath("$.content").value("bar"))
                 .andExpect(jsonPath("$.id").value(post.getId()))
+                .andDo(print());
+    }
+    @Test
+    @DisplayName("글 N개 조회")
+    void test6() throws Exception{
+        // given
+        Post post = Post.builder()
+                .title("foo")
+                .content("bar")
+                .build();
+        postRepository.save(post);
+        Post post2 = Post.builder()
+                .title("foo2")
+                .content("bar2")
+                .build();
+        postRepository.save(post2);
+
+        // expected
+        mockMvc.perform(get("/posts")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$.length()", Matchers.is(2)))
+                .andExpect(jsonPath("$.[0].title").value("foo"))
+                .andExpect(jsonPath("$.[0].content").value("bar"))
+                .andExpect(jsonPath("$.[0].id").value(post.getId()))
+                .andExpect(jsonPath("$.[1].title").value("foo2"))
+                .andExpect(jsonPath("$.[1].content").value("bar2"))
+                .andExpect(jsonPath("$.[1].id").value(post2.getId()))
                 .andDo(print());
     }
 
