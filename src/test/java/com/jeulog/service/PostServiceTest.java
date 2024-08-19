@@ -3,6 +3,7 @@ package com.jeulog.service;
 import com.jeulog.domain.Post;
 import com.jeulog.repository.PostRepository;
 import com.jeulog.request.PostCreate;
+import com.jeulog.request.PostSearch;
 import com.jeulog.response.PostResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,9 +73,13 @@ class PostServiceTest {
                 .collect(Collectors.toList());
         postRepository.saveAll(requestPosts);
 
+        PostSearch postSearch = PostSearch.builder()
+                //.page(1)
+                //.size(10)
+                .build();
+
         // when
-        List<PostResponse> posts = postService.getList(
-                PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "id")));
+        List<PostResponse> posts = postService.getList(postSearch);
 
         // then
         assertThat(posts.size()).isEqualTo(10);
