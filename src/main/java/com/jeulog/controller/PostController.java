@@ -27,9 +27,14 @@ public class PostController {
         log.info("request={}", request);
         return postService.write(request);
     }
+    // 단건 조회 API
     @GetMapping("/posts/{postId}")
-    public PostResponse get(@PathVariable(name = "postId") Long id){
-        log.info("get id = {}", id);
-        return postService.get(id);
+    public PostResponse get(@PathVariable Long postId){
+        log.info("get id = {}", postId);
+        return postService.get(postId);
+    }
+    @GetMapping("/posts")
+    public List<Post> getList(){
+       return postService.getList();
     }
 }

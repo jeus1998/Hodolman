@@ -7,6 +7,7 @@ import com.jeulog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -33,5 +34,9 @@ public class PostService {
                 .content(post.getContent())
                 .id(post.getId())
                 .build();
+    }
+
+    public List<Post> getList() {
+        return postRepository.findAll();
     }
 }
