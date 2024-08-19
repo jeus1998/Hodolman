@@ -3,6 +3,7 @@ package com.jeulog.service;
 import com.jeulog.domain.Post;
 import com.jeulog.repository.PostRepository;
 import com.jeulog.request.PostCreate;
+import com.jeulog.request.PostSearch;
 import com.jeulog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +41,8 @@ public class PostService {
                 .build();
     }
 
-    public List<PostResponse> getList(Pageable pageable) {
-        return postRepository.getList(1)
+    public List<PostResponse> getList(PostSearch postSearch) {
+        return postRepository.getList(postSearch)
                 .stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
