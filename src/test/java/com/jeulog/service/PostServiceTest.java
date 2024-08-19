@@ -8,8 +8,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -54,26 +58,25 @@ class PostServiceTest {
         assertThat(response.getTitle()).isEqualTo(post.getTitle());
     }
     @Test
-    @DisplayName("글 N개 조회")
+    @DisplayName("글 1페이지 조회")
     void test3(){
         // given
-        Post post = Post.builder()
-                .title("제목1")
-                .content("내용1")
-                .build();
-        postRepository.save(post);
-        Post post2 = Post.builder()
-                       .title("제목2")
-                       .content("내용2")
-                       .build();
-        postRepository.save(post2);
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> {
+                    return Post.builder()
+                            .title("호돌맨 제목 " + i)
+                            .content("배제우 내용 " + i)
+                            .build();
+                })
+                .collect(Collectors.toList());
+        postRepository.saveAll(requestPosts);
 
         // when
-        List<PostResponse> posts = postService.getList();
+        List<PostResponse> posts = postService.getList(0);
 
         // then
-        assertThat(posts.size()).isEqualTo(2);
+        assertThat(posts.size()).isEqualTo(5);
         assertThat(posts).extracting("title")
-                .containsExactly("제목1", "제목2");
+                .containsExactly("호돌맨 제목 30", "호돌맨 제목 29", "호돌맨 제목 28", "호돌맨 제목 27", "호돌맨 제목 26");
     }
 }
