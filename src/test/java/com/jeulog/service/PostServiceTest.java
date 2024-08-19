@@ -53,4 +53,27 @@ class PostServiceTest {
         // then
         assertThat(response.getTitle()).isEqualTo(post.getTitle());
     }
+    @Test
+    @DisplayName("글 N개 조회")
+    void test3(){
+        // given
+        Post post = Post.builder()
+                .title("제목1")
+                .content("내용1")
+                .build();
+        postRepository.save(post);
+        Post post2 = Post.builder()
+                       .title("제목2")
+                       .content("내용2")
+                       .build();
+        postRepository.save(post2);
+
+        // when
+        List<Post> posts = postService.getList();
+
+        // then
+        assertThat(posts.size()).isEqualTo(2);
+        assertThat(posts).extracting("title")
+                .containsExactly("제목1", "제목2");
+    }
 }
