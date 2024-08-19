@@ -1,6 +1,7 @@
 package com.jeulog.controller;
 import com.jeulog.domain.Post;
 import com.jeulog.request.PostCreate;
+import com.jeulog.request.PostSearch;
 import com.jeulog.response.PostResponse;
 import com.jeulog.service.PostService;
 import jakarta.validation.Valid;
@@ -36,7 +37,7 @@ public class PostController {
         return postService.get(postId);
     }
     @GetMapping("/posts")
-    public List<PostResponse> getList(@PageableDefault Pageable pageable){
-       return postService.getList(pageable);
+    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch){
+        return postService.getList(postSearch);
     }
 }
