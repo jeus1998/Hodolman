@@ -1,5 +1,6 @@
 package com.jeulog.response;
 
+import com.jeulog.domain.Post;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,6 +12,12 @@ public class PostResponse {
     private Long id;
     private String title;
     private String content;
+
+    public PostResponse(Post post){
+        id = post.getId();
+        title = post.getTitle();
+        content = post.getContent();
+    }
     @Builder
     public PostResponse(Long id, String title, String content) {
         this.id = id;
