@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -157,7 +159,7 @@ class PostControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$.length()", Matchers.is(2)))
+                .andExpect(jsonPath("$.length()", Matchers.is(2))) // Matcher 인터페이스를 구현해서 기능 확장이 가능
                 .andExpect(jsonPath("$.[0].title").value("foo"))
                 .andExpect(jsonPath("$.[0].content").value("bar"))
                 .andExpect(jsonPath("$.[0].id").value(post.getId()))
@@ -166,5 +168,28 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.[1].id").value(post2.getId()))
                 .andDo(print());
     }
-
+    @Test
+    @DisplayName("글 조회(페이징)")
+    void test7() throws Exception{
+        // given
+        List<Post> requestPosts = IntStream.range(1, 31)
+               .mapToObj(i -> {
+                   return Post.builder()
+                           .title("호돌맨 제목 " + i)
+                           .content("배제우 내용 " + i)
+                           .build();
+               })
+               .collect(Collectors.toList());
+        postRepository.saveAll(requestPosts);
+        // Pageable 파라미터 ex page=1&size=10&sort=id,desc
+        mockMvc.perform(get("/posts?page=1&sort=id,desc")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(10))
+                .andExpect(jsonPath("$.[0].title").value("호돌맨 제목 30"))
+                .andExpect(jsonPath("$.[9].title").value("호돌맨 제목 21"))
+                .andExpect(jsonPath("$.[0].content").value("배제우 내용 30"))
+                .andExpect(jsonPath("$.[9].content").value("배제우 내용 21"))
+                .andDo(print());
+    }
 }
