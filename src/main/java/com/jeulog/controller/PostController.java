@@ -34,7 +34,7 @@ public class PostController {
         return postService.get(postId);
     }
     @GetMapping("/posts")
-    public List<Post> getList(){
+    public List<PostResponse> getList(){
        return postService.getList();
     }
 }
