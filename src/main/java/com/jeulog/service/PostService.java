@@ -38,12 +38,6 @@ public class PostService {
     }
 
     public List<PostResponse> getList() {
-        return postRepository.findAll().stream().map(
-                p -> PostResponse.builder()
-                        .id(p.getId())
-                        .title(p.getTitle())
-                        .content(p.getContent())
-                        .build()
-        ).collect(Collectors.toList());
+        return postRepository.findAll().stream().map(PostResponse::new).collect(Collectors.toList());
     }
 }
