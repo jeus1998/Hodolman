@@ -1,5 +1,6 @@
 package com.jeulog.request;
 
+import com.jeulog.exception.InvalidRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -14,6 +15,9 @@ public class PostCreate {
     public PostCreate(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+    public void validate(PostCreate request) {
+        if(request.getTitle().contains("바보")) throw new InvalidRequest();
     }
     // 빌더의 장점
     // 가독성에 좋다 (값 생성에 대한 유연한)
