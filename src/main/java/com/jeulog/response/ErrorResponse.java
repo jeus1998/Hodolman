@@ -1,6 +1,7 @@
 package com.jeulog.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.jeulog.exception.Validation;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +22,14 @@ import java.util.*;
 public class ErrorResponse {
     private final String code;
     private final String message;
-    private final List<Validation> validations = new ArrayList<>();
+    private final List<Validation> validations;
     @Builder
-    public ErrorResponse(String code, String message) {
+    public ErrorResponse(String code, String message, List<Validation> validations) {
+        this.validations = validations;
         this.code = code;
         this.message = message;
     }
     public void addValidation(String fieldName, String errorMessage){
         validations.add(new Validation(fieldName, errorMessage));
-    }
-    @Getter
-    @RequiredArgsConstructor
-    private class Validation {
-        private final String fieldName;
-        private final String errorMessage;
     }
 }
