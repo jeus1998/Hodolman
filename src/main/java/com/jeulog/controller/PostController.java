@@ -1,6 +1,7 @@
 package com.jeulog.controller;
 import com.jeulog.domain.Post;
 import com.jeulog.request.PostCreate;
+import com.jeulog.request.PostEdit;
 import com.jeulog.request.PostSearch;
 import com.jeulog.response.PostResponse;
 import com.jeulog.service.PostService;
@@ -39,5 +40,9 @@ public class PostController {
     @GetMapping("/posts")
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch){
         return postService.getList(postSearch);
+    }
+    @PatchMapping("/posts/{postId}")
+    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit){
+        postService.edit(postId, postEdit);
     }
 }
