@@ -3,6 +3,7 @@ package com.jeulog.service;
 import com.jeulog.domain.Post;
 import com.jeulog.repository.PostRepository;
 import com.jeulog.request.PostCreate;
+import com.jeulog.request.PostEdit;
 import com.jeulog.request.PostSearch;
 import com.jeulog.response.PostResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -85,5 +86,30 @@ class PostServiceTest {
         assertThat(posts.size()).isEqualTo(10);
         assertThat(posts).extracting("title")
                 .contains("호돌맨 제목 30", "호돌맨 제목 29", "호돌맨 제목 28", "호돌맨 제목 27", "호돌맨 제목 26");
+    }
+    @Test
+    @DisplayName("수정")
+    void test4(){
+        // given
+        Post post = Post.builder()
+                .title("호돌맨")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("호돌걸")
+                .content("자이반포")
+                .build();
+
+        // when
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+
+        assertThat(changedPost.getTitle()).isEqualTo("호돌걸");
+        assertThat(changedPost.getContent()).isEqualTo("자이반포");
     }
 }
