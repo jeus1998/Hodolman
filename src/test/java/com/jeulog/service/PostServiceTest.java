@@ -112,4 +112,20 @@ class PostServiceTest {
         assertThat(changedPost.getTitle()).isEqualTo("호돌걸");
         assertThat(changedPost.getContent()).isEqualTo("자이반포");
     }
+    @Test
+    @DisplayName("게시글 삭제")
+    void test5(){
+        // given
+        Post post = Post.builder()
+                  .title("호돌맨")
+                  .content("반포자이")
+                  .build();
+        postRepository.save(post);
+
+        // when
+        postService.delete(post.getId());
+
+        // then
+        assertThat(postRepository.count()).isEqualTo(0);
+    }
 }
