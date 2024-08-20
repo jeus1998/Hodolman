@@ -17,7 +17,9 @@ public class PostCreate {
         this.content = content;
     }
     public void validate(PostCreate request) {
-        if(request.getTitle().contains("바보")) throw new InvalidRequest();
+        if(request.getTitle().contains("바보")){
+            throw new InvalidRequest("title", "게시글 제목에 바보는 포함할 수 없습니다.");
+        }
     }
     // 빌더의 장점
     // 가독성에 좋다 (값 생성에 대한 유연한)
