@@ -2,6 +2,7 @@ package com.jeulog.service;
 
 import com.jeulog.domain.Post;
 import com.jeulog.domain.PostEditor;
+import com.jeulog.exception.PostNotFound;
 import com.jeulog.repository.PostRepository;
 import com.jeulog.request.PostCreate;
 import com.jeulog.request.PostEdit;
@@ -34,7 +35,7 @@ public class PostService {
     public PostResponse get(Long id) {
         Post post = postRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(() -> new PostNotFound());
 
         return PostResponse.builder()
                 .title(post.getTitle())
@@ -51,7 +52,7 @@ public class PostService {
     @Transactional
     public void edit(Long id, PostEdit postEdit) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(() -> new PostNotFound());
 
         PostEditor.PostEditorBuilder editor = post.toEditor();
 
@@ -65,7 +66,7 @@ public class PostService {
     @Transactional
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(() -> new PostNotFound());
 
         postRepository.delete(post);
     }
