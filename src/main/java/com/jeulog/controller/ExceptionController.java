@@ -1,9 +1,11 @@
 package com.jeulog.controller;
 
+import com.jeulog.exception.JeuException;
 import com.jeulog.exception.PostNotFound;
 import com.jeulog.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -42,6 +44,22 @@ public class ExceptionController {
                 .code("404")
                 .message(e.getMessage())
                 .build();
+    }
+
+    /**
+     * 예외 처리 공통화
+     * ex) 예외 처리가 수백개면 수백개의 RuntimeException 만들고 컨트롤러 어드바이스에 적용해야함
+     * JeuException abstract 클래스로 공통화
+     */
+    @ExceptionHandler(JeuException.class)
+    public ResponseEntity<ErrorResponse> jeuException(JeuException e){
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(String.valueOf(e.statusCode()))
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(e.statusCode()).body(body);
     }
 
 }
