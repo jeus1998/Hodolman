@@ -35,7 +35,7 @@ public class PostService {
     public PostResponse get(Long id) {
         Post post = postRepository
                 .findById(id)
-                .orElseThrow(() -> new PostNotFound());
+                .orElseThrow(PostNotFound::new);
 
         return PostResponse.builder()
                 .title(post.getTitle())
@@ -52,7 +52,7 @@ public class PostService {
     @Transactional
     public void edit(Long id, PostEdit postEdit) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFound());
+                .orElseThrow(PostNotFound::new);
 
         PostEditor.PostEditorBuilder editor = post.toEditor();
 
@@ -66,7 +66,7 @@ public class PostService {
     @Transactional
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFound());
+                .orElseThrow(PostNotFound::new);
 
         postRepository.delete(post);
     }
