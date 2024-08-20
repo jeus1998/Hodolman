@@ -29,7 +29,7 @@ public class PostController {
     private final PostService postService;
     @PostMapping("/posts")
     public Post post(@Valid @RequestBody PostCreate request){
-        if(request.getTitle().contains("바보")) throw new InvalidRequest();
+        request.validate(request);
         return postService.write(request);
     }
     // 단건 조회 API
