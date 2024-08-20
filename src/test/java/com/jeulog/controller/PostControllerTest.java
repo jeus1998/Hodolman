@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jeulog.domain.Post;
 import com.jeulog.repository.PostRepository;
 import com.jeulog.request.PostCreate;
+import com.jeulog.request.PostEdit;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -190,6 +191,30 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.[9].title").value("호돌맨 제목 21"))
                 .andExpect(jsonPath("$.[0].content").value("배제우 내용 30"))
                 .andExpect(jsonPath("$.[9].content").value("배제우 내용 21"))
+                .andDo(print());
+    }
+    @Test
+    @DisplayName("글 수정")
+    void test8() throws Exception{
+        // given
+        Post post = Post.builder()
+                .title("호돌맨")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                       .title("호돌걸")
+                       .content("자이반포")
+                       .build();
+
+        String json = objectMapper.writeValueAsString(postEdit);
+
+        // expected
+        mockMvc.perform(patch("/posts/{postId}", post.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }
