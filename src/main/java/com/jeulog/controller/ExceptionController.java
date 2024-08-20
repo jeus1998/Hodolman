@@ -1,5 +1,6 @@
 package com.jeulog.controller;
 
+import com.jeulog.exception.PostNotFound;
 import com.jeulog.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -33,4 +35,13 @@ public class ExceptionController {
 
         return response;
     }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PostNotFound.class)
+    public ErrorResponse postNotFound(PostNotFound e){
+        return ErrorResponse.builder()
+                .code("404")
+                .message(e.getMessage())
+                .build();
+    }
+
 }
