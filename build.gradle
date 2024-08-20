@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.2'
     id 'io.spring.dependency-management' version '1.1.6'
+    id "org.asciidoctor.jvm.convert" version "3.3.2" // 1: asciidoctor 플러그인 추가
 }
 
 group = 'com.example'
@@ -14,6 +15,7 @@ java {
 }
 
 configurations {
+    asciidoctorExt // 2
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -24,6 +26,9 @@ repositories {
 }
 
 dependencies {
+    // Spring REST Docks
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor' // 3
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // 4
 
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
@@ -39,6 +44,29 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets') // 5
+}
+
+test{
+    outputs.dir snippetsDir // 6
+}
+
+asciidoctor { // 7
+	inputs.dir snippetsDir // 8
+	configurations 'asciidoctorExt' // 9
+	dependsOn test // 10 asciidoctor 수행하기전 test 수행하도록 선언
+}
+
+bootJar {
+	dependsOn asciidoctor
+
+    copy{
+        from asciidoctor.outputDir
+        into "src/main/resources/static/docs"
+    }
 }
 
 tasks.named('test') {
