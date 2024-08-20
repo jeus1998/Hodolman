@@ -1,6 +1,7 @@
 package com.jeulog.service;
 
 import com.jeulog.domain.Post;
+import com.jeulog.exception.PostNotFound;
 import com.jeulog.repository.PostRepository;
 import com.jeulog.request.PostCreate;
 import com.jeulog.request.PostEdit;
@@ -10,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -127,5 +126,54 @@ class PostServiceTest {
 
         // then
         assertThat(postRepository.count()).isEqualTo(0);
+    }
+    @Test
+    @DisplayName("존재하지 않는 글 조회")
+    void test6(){
+        // given
+        Post post = Post.builder()
+                .title("호돌맨")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        // expected
+        assertThatThrownBy(() ->  postService.get(post.getId() + 1))
+                .isInstanceOf(PostNotFound.class)
+                .hasMessageContaining("존재하지 않는 글입니다.");
+    }
+    @Test
+    @DisplayName("게시글 삭제 - 존재하지 않는 글 삭제")
+    void test7(){
+        // given
+        Post post = Post.builder()
+                  .title("호돌맨")
+                  .content("반포자이")
+                  .build();
+        postRepository.save(post);
+
+        // expected
+        assertThatThrownBy(()-> postService.delete(post.getId() + 1))
+                .isInstanceOf(PostNotFound.class);
+    }
+
+    @Test
+    @DisplayName("게시글 수정 - 존재하지 않는 글 수정")
+    void test8(){
+        // given
+        Post post = Post.builder()
+                .title("호돌맨")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("호돌걸")
+                .content("자이반포")
+                .build();
+
+        // expected
+        assertThatThrownBy(()-> postService.edit(post.getId() + 1, postEdit))
+                     .isInstanceOf(PostNotFound.class);
     }
 }
