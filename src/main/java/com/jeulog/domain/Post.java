@@ -1,10 +1,8 @@
 package com.jeulog.domain;
 
+import com.jeulog.request.PostEdit;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
@@ -20,5 +18,18 @@ public class Post {
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+    public void update(PostEdit postEdit){
+        this.title = postEdit.getTitle();
+        this.content = postEdit.getContent();
+    }
+    public PostEditor.PostEditorBuilder toEditor(){
+         return PostEditor.builder()
+                .title(title)
+                .content(content);
+    }
+    public void edit(PostEditor postEditor){
+        title = postEditor.getTitle();
+        content = postEditor.getContent();
     }
 }
