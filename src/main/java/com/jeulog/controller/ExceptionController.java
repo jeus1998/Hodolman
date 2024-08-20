@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,6 +29,7 @@ public class ExceptionController {
 
         ErrorResponse response = ErrorResponse.builder()
                 .code("400")
+                .validations(new ArrayList<>())
                 .message("잘못된 요청입니다.")
                 .build();
 
@@ -37,15 +39,6 @@ public class ExceptionController {
 
         return response;
     }
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(PostNotFound.class)
-    public ErrorResponse postNotFound(PostNotFound e){
-        return ErrorResponse.builder()
-                .code("404")
-                .message(e.getMessage())
-                .build();
-    }
-
     /**
      * 예외 처리 공통화
      * ex) 예외 처리가 수백개면 수백개의 RuntimeException 만들고 컨트롤러 어드바이스에 적용해야함
@@ -56,6 +49,7 @@ public class ExceptionController {
 
         ErrorResponse body = ErrorResponse.builder()
                 .code(String.valueOf(e.statusCode()))
+                .validations(e.getValidations())
                 .message(e.getMessage())
                 .build();
 
