@@ -142,34 +142,6 @@ class PostControllerTest {
                 .andDo(print());
     }
     @Test
-    @DisplayName("글 N개 조회")
-    void test6() throws Exception{
-        // given
-        Post post = Post.builder()
-                .title("foo")
-                .content("bar")
-                .build();
-        Post post2 = Post.builder()
-                .title("foo2")
-                .content("bar2")
-                .build();
-        postRepository.saveAll(List.of(post, post2));
-
-        // expected
-        mockMvc.perform(get("/posts")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$.length()", Matchers.is(2))) // Matcher 인터페이스를 구현해서 기능 확장이 가능
-                .andExpect(jsonPath("$.[0].title").value("foo"))
-                .andExpect(jsonPath("$.[0].content").value("bar"))
-                .andExpect(jsonPath("$.[0].id").value(post.getId()))
-                .andExpect(jsonPath("$.[1].title").value("foo2"))
-                .andExpect(jsonPath("$.[1].content").value("bar2"))
-                .andExpect(jsonPath("$.[1].id").value(post2.getId()))
-                .andDo(print());
-    }
-    @Test
     @DisplayName("글 조회(페이징)")
     void test7() throws Exception{
         // given
@@ -240,6 +212,55 @@ class PostControllerTest {
         mockMvc.perform(get("/posts/{postId}", 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 수정")
+    void test11() throws Exception{
+        // given
+        PostEdit postEdit = PostEdit.builder()
+                      .title("호돌걸")
+                      .content("자이반포")
+                      .build();
+
+        String json = objectMapper.writeValueAsString(postEdit);
+
+        // expected
+        mockMvc.perform(patch("/posts/{postId}", 1)
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 삭제")
+    void tet12() throws Exception{
+       // expected
+       mockMvc.perform(delete("/posts/{postId}", 1)
+               .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isNotFound())
+               .andExpect(jsonPath("$.message").value("존재하지 않는 글입니다."))
+               .andExpect(jsonPath("$.code").value("404"))
+               .andExpect(jsonPath("$.validations.size()").value(0))
+               .andDo(print());
+    }
+    @Test
+    @DisplayName("게시글 작성시 제목에 '바보'는 포함될 수 없다.")
+    void tet13() throws Exception{
+        // given
+        PostCreate request = PostCreate.builder()
+                .title("나는 바보")
+                .content("반포자이")
+                .build();
+        String json = objectMapper.writeValueAsString(request);
+
+        // expected
+         mockMvc.perform(post("/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("잘못된 요청 입니다."))
                 .andDo(print());
     }
 }
