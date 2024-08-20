@@ -45,4 +45,8 @@ public class PostController {
     public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit){
         postService.edit(postId, postEdit);
     }
+    @DeleteMapping("/posts/{postId}")
+    public void delete(@PathVariable Long postId){
+        postService.delete(postId);
+    }
 }
