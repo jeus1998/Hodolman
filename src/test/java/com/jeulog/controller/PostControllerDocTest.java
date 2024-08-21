@@ -18,6 +18,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.request.RequestDocumentation;
+import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -64,7 +65,7 @@ public class PostControllerDocTest {
                         .accept(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("index",
+                .andDo(document("post-inquiry",
                         RequestDocumentation.pathParameters(
                                 RequestDocumentation.parameterWithName("postId").description("게시글 ID")
                         ),
@@ -86,16 +87,24 @@ public class PostControllerDocTest {
         String json = objectMapper.writeValueAsString(postCreate);
 
         // expected
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/posts")
+        mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/posts")
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("index",
+                .andDo(document("post-create",
                         PayloadDocumentation.requestFields(
-                          PayloadDocumentation.fieldWithPath("title").description("제목"),
-                          PayloadDocumentation.fieldWithPath("content").description("내용")
+                          PayloadDocumentation
+                                  .fieldWithPath("title")
+                                  .description("제목")
+                                  .optional()
+                                  .attributes(Attributes.key("constraint").value("좋은 제목 입력해 주세요.")),
+                          PayloadDocumentation
+                                  .fieldWithPath("content")
+                                  .description("내용")
+                                  .optional()
                         )
                         ));
     }
