@@ -20,13 +20,12 @@ const write = function(){
   </div>
 
   <div class="mt-2">
-    <el-input v-model="content" type="textarea" rows="15"/>
+    <el-input v-model="content" placeholder="내용을 입력해주세요" type="textarea" rows="15"/>
   </div>
 
   <div class="mt-2">
   <el-button type="primary" @click="write()">글 작성완료</el-button>
   </div>
-
 </template>
 
 <style>
