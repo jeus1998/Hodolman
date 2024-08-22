@@ -6,10 +6,12 @@ const title = ref("")
 const content = ref("")
 
 const write = function(){
-  console.log(title.value, content.value)
-  axios.get("http://google.com") // CORS 문제 발생
+  // console.log(title.value, content.value)
+  axios.post("http://localhost:8080/posts", {
+      title: title.value,
+      content: content.value
+  });
 }
-
 </script>
 
 <template>
