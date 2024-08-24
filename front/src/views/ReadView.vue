@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import axios from "axios";
 import {onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
 
 const props = defineProps({
   postId: {
@@ -15,6 +16,11 @@ const post = ref({
   content: ""
 });
 
+const router = useRouter();
+const moveToEdit =() =>{
+  router.push({name: "edit", params: {postId: props.postId}});
+};
+
 onMounted(() => {
   // console.log(props.postId)
   axios.get(`/api/posts/${props.postId}`)
@@ -28,4 +34,6 @@ onMounted(() => {
 <template>
   <h2>{{post.title}}</h2>
   <div>{{post.content}}</div>
+
+  <el-button type="warning" @click="moveToEdit()">수정</el-button>
 </template>
