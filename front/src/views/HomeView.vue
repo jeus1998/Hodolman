@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
 import {ref} from "vue";
-import {useRouter} from "vue-router";
-
-const router = useRouter()
 
 const posts = ref([]);
 
@@ -14,11 +11,6 @@ axios.get("/api/posts?page=1&size=10")
         posts.value.push(r);
      });
   });
-
-const moveToRead = () =>{
-   router.push({ name: "read" });
-};
-
 </script>
 
 <template>
