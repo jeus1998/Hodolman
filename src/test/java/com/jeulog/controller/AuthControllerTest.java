@@ -84,4 +84,42 @@ class AuthControllerTest {
         assertThat(result.size()).isEqualTo(1);
         System.out.println("result = " + result);
     }
+    @Test
+    @DisplayName("로그인 후 권한이 필요한 페이지 접속한다 /test")
+    void test3() throws Exception{
+        // given
+        User user = User.builder()
+                       .email("baejeu12@naver.com")
+                       .password("12345")
+                       .build();
+
+        Session session = user.addSession(); // 로그인
+        userRepository.save(user);
+
+        // expected
+        mockMvc.perform(get("/test")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", session.getAccessToken()))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+    @Test
+    @DisplayName("로그인 후 검증되지 않은 세션값으로 권한이 필요한 페이지에 접속할 수 없다. /test")
+    void test4() throws Exception{
+        // given
+        User user = User.builder()
+                       .email("baejeu12@naver.com")
+                       .password("12345")
+                       .build();
+
+        Session session = user.addSession(); // 로그인
+        userRepository.save(user);
+
+        // expected
+        mockMvc.perform(get("/test")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", session.getAccessToken() + "sss"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
 }
