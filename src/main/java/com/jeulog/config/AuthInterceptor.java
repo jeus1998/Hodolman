@@ -4,6 +4,7 @@ import com.jeulog.exception.Unauthorized;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,8 +15,10 @@ public class AuthInterceptor implements HandlerInterceptor{
          log.info(">> preHandle");
 
         String accessToken = request.getParameter("accessToken");
-        if(accessToken != null && accessToken.equals("jeu")) return true;
-
+        if(StringUtils.hasText(accessToken)){
+            request.setAttribute("userName", accessToken);
+            return true;
+        }
         throw new Unauthorized();
     }
     @Override
