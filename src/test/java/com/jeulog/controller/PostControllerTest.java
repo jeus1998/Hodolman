@@ -74,7 +74,7 @@ class PostControllerTest {
                 .andDo(print());
     }
     @Test
-    @DisplayName("/post 요청시 title, content 필수")
+    @DisplayName("글 작성 요청시 title, content 필수")
     void test3() throws Exception{
 
         PostCreate request = PostCreate.builder().build();
@@ -92,10 +92,9 @@ class PostControllerTest {
                 .andDo(print());
     }
     @Test
-    @DisplayName("/post 요청시 DB에 값이 저장된다.")
+    @DisplayName("글 작성 요청시 DB에 값이 저장된다.")
     void test4() throws Exception{
         // when
-
         PostCreate request = PostCreate
                 .builder()
                 .title("제목입니다.")
@@ -106,6 +105,7 @@ class PostControllerTest {
 
         mockMvc.perform(
                 post("/posts")
+                        .header("authorization", "jeu")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(json)
                 )
