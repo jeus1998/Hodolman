@@ -1,4 +1,5 @@
 package com.jeulog.controller;
+import com.jeulog.config.data.UserSession;
 import com.jeulog.domain.Post;
 import com.jeulog.exception.InvalidRequest;
 import com.jeulog.request.PostCreate;
@@ -20,15 +21,10 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/test")  // 인증 필요
-    public String test(){
+    public String test(UserSession userSession){
+        log.info(">>>{}", userSession.name);
         return "hello";
     }
-    @GetMapping("/test2") // 인증 필요 X
-    public String test2(){
-        return "hello2";
-    }
-
-
     @PostMapping("/posts")
     public Post post(@Valid @RequestBody PostCreate request, @RequestHeader String authorization){
         if(authorization.equals("jeu")){
