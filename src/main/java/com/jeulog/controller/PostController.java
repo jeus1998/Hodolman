@@ -9,24 +9,26 @@ import com.jeulog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
-
-// SSR -> jsp, thymeleaf
-        // -> html rendering
-// SPA -> vue
-        // -> javascript + <-> API (JSON)
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+
+    @GetMapping("/test")  // 인증 필요
+    public String test(){
+        return "hello";
+    }
+    @GetMapping("/test2") // 인증 필요 X
+    public String test2(){
+        return "hello2";
+    }
+
+
     @PostMapping("/posts")
     public Post post(@Valid @RequestBody PostCreate request, @RequestHeader String authorization){
         if(authorization.equals("jeu")){
