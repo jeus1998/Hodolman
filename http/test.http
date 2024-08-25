@@ -1,0 +1,5 @@
+### 인증이 필요한 페이지 요청
+
+GET http://localhost:8080/test
+Content-Type: application/json
+Cookie: SESSION=32d86df3-3475-4710-acf4-c308b4cadd2d
