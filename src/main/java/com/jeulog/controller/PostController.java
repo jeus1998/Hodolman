@@ -28,9 +28,12 @@ import java.util.*;
 public class PostController {
     private final PostService postService;
     @PostMapping("/posts")
-    public Post post(@Valid @RequestBody PostCreate request){
-        request.validate(request);
-        return postService.write(request);
+    public Post post(@Valid @RequestBody PostCreate request, @RequestHeader String authorization){
+        if(authorization.equals("jeu")){
+            request.validate(request);
+            return postService.write(request);
+        }
+        throw new InvalidRequest();
     }
     // 단건 조회 API
     @GetMapping("/posts/{postId}")
