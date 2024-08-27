@@ -2,4 +2,4 @@
 
 GET http://localhost:8080/test
 Content-Type: application/json
-Cookie: SESSION=32d86df3-3475-4710-acf4-c308b4cadd2d
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.EdBaut8ISNPbP4_e7KGrQS62LIHua6fHwB9aB1obqto
