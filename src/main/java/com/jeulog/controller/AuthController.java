@@ -3,39 +3,41 @@ package com.jeulog.controller;
 import com.jeulog.request.Login;
 import com.jeulog.response.SessionResponse;
 import com.jeulog.service.AuthService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Duration;
+import javax.crypto.SecretKey;
+import java.util.Base64;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    public static final String KEY = "kUJBh4N8N7jI7WnaA5YsI0qbIx/EgNNvlmpjgorIWPQ=";
     @PostMapping("/auth/login")
-    public ResponseEntity login(@RequestBody Login login){
-        String accessToken = authService.login(login);
-        ResponseCookie cookie = ResponseCookie.from("SESSION", accessToken)
-                .domain("localhost") // todo 서버 환경에 따른 분리 필요
-                .path("/")
-                .httpOnly(true)
-                .secure(false)
-                .maxAge(Duration.ofDays(30))
-                .sameSite("Strict")
-                .build();
+    public SessionResponse login(@RequestBody Login login){
 
-        log.info("cookie={}", cookie);
+        Long userId = authService.login(login);
 
-        return ResponseEntity
-                .ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .build();
+        // SecretKey 발급 1회성
+        // SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        // byte[] encodedKey = secretKey.getEncoded();
+        // String secretStrKey = Base64.getEncoder().encodeToString(encodedKey);
+
+        byte[] decodeKey = Base64.getDecoder().decode(KEY);
+
+        String jws = Jwts.builder()
+                .setSubject(String.valueOf(userId))
+                .signWith(SignatureAlgorithm.HS256, decodeKey)
+                .compact();
+
+        return new SessionResponse(jws);
     }
 }
