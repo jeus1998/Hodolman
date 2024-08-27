@@ -16,11 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
     private final UserRepository userRepository;
     @Transactional
-    public String login(Login login){
+    public Long login(Login login){
         log.info("AuthService");
         User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
                        .orElseThrow(InvalidSignInformation::new);
 
-        return user.addSession().getAccessToken();
+        return user.getId();
     }
 }
