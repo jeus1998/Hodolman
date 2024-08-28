@@ -2,6 +2,7 @@ package com.jeulog.controller;
 
 import com.jeulog.config.AppConfig;
 import com.jeulog.request.Login;
+import com.jeulog.request.SignUp;
 import com.jeulog.response.SessionResponse;
 import com.jeulog.service.AuthService;
 import io.jsonwebtoken.Jwts;
@@ -31,6 +32,10 @@ public class AuthController {
                 .compact();
 
         return new SessionResponse(jws);
+    }
+    @PostMapping("/auth/signup")
+    public void signUp(@RequestBody SignUp signup){
+        authService.signUp(signup);
     }
 }
 /*
