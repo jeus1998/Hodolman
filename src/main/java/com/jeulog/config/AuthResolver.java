@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -26,6 +27,7 @@ import java.util.Base64;
 @RequiredArgsConstructor
 public class AuthResolver implements HandlerMethodArgumentResolver {
     private final SessionRepository sessionRepository;
+    private final AppConfig appConfig;
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.getParameterType().equals(UserSession.class);
@@ -36,12 +38,9 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
         if(!StringUtils.hasText(jws)){
             throw new Unauthorized();
         }
-
-        byte[] decodeKey = Base64.getDecoder().decode(AuthController.KEY);
-
         try {
             Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(decodeKey)
+                    .setSigningKey(appConfig.getJwtKey())
                     .build()
                     .parseClaimsJws(jws);
             String userId = claims.getPayload().getSubject();

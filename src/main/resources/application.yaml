@@ -31,4 +31,4 @@ logging:
     org.hibernate.orm.jdbc.bind: trace # 스프링 부트 3.XX 이상 SQL 파라미터 바인딩 정보 표시
 
 jeujeu:
-  hello: "world"
+  jwt_key: "kUJBh4N8N7jI7WnaA5YsI0qbIx/EgNNvlmpjgorIWPQ="
