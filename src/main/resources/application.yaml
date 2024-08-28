@@ -19,7 +19,7 @@ spring:
     defer-datasource-initialization: true
   sql:
     init:
-      model: always
+      mode: never
   data:
     web:
       pageable:
