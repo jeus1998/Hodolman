@@ -6,6 +6,7 @@ import com.jeulog.domain.User;
 import com.jeulog.repository.SessionRepository;
 import com.jeulog.repository.UserRepository;
 import com.jeulog.request.Login;
+import com.jeulog.request.SignUp;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,6 +121,25 @@ class AuthControllerTest {
                         .contentType(APPLICATION_JSON)
                         .header("Authorization", session.getAccessToken() + "sss"))
                 .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
+    @Test
+    @DisplayName("회원가입")
+    void test5() throws Exception{
+        // given
+        SignUp signUp = SignUp.builder()
+                        .name("jeu")
+                        .email("baejeu@naver.com")
+                        .password("1234")
+                        .build();
+
+        String json = objectMapper.writeValueAsString(signUp);
+
+        // expected
+        mockMvc.perform(post("/auth/signup")
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }
