@@ -1,6 +1,5 @@
 package com.jeulog.config;
 
-import com.jeulog.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -13,7 +12,6 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
-    private final SessionRepository sessionRepository;
     private final AppConfig appConfig;
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -28,6 +26,6 @@ public class WebConfig implements WebMvcConfigurer {
     }
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-       resolvers.add(new AuthResolver(sessionRepository, appConfig));
+       // resolvers.add(new AuthResolver(sessionRepository, appConfig));
     }
 }
