@@ -7,6 +7,7 @@ import com.jeulog.request.PostCreate;
 import com.jeulog.request.PostEdit;
 import com.jeulog.request.PostSearch;
 import com.jeulog.response.PostResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -25,6 +25,10 @@ class PostServiceTest {
     private PostService postService;
     @Autowired
     private PostRepository postRepository;
+    @BeforeEach
+    void beforeEach(){
+        postRepository.deleteAllInBatch();
+    }
     @Test
     @DisplayName("글 작성")
     void test1(){
@@ -38,7 +42,7 @@ class PostServiceTest {
         postService.write(postCreate);
 
         // then
-        assertThat(1L).isEqualTo(postRepository.count());
+        assertThat(postRepository.count()).isEqualTo(1);
         List<Post> result = postRepository.findAll();
              assertThat(result).extracting("title")
                      .containsExactly("제목");

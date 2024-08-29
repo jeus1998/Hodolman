@@ -1,6 +1,5 @@
 package com.jeulog.controller;
 import com.jeulog.domain.Post;
-import com.jeulog.exception.InvalidRequest;
 import com.jeulog.request.PostCreate;
 import com.jeulog.request.PostEdit;
 import com.jeulog.request.PostSearch;
@@ -19,12 +18,9 @@ import java.util.*;
 public class PostController {
     private final PostService postService;
     @PostMapping("/posts")
-    public Post post(@Valid @RequestBody PostCreate request, @RequestHeader String authorization){
-        if(authorization.equals("jeu")){
-            request.validate(request);
-            return postService.write(request);
-        }
-        throw new InvalidRequest();
+    public Post post(@Valid @RequestBody PostCreate request){
+        request.validate(request);
+        return postService.write(request);
     }
     // 단건 조회 API
     @GetMapping("/posts/{postId}")

@@ -5,6 +5,7 @@ import com.jeulog.domain.Post;
 import com.jeulog.repository.PostRepository;
 import com.jeulog.request.PostCreate;
 import com.jeulog.request.PostEdit;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,10 @@ class PostControllerTest {
     @Autowired
     private PostRepository postRepository;
 
+    @BeforeEach
+    void beforeEach(){
+        postRepository.deleteAllInBatch();
+    }
     @Test
     @DisplayName("application/x-www-form-urlencoded")
     void test1() throws Exception{
