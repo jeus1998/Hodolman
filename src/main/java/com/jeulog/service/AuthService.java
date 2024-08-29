@@ -11,6 +11,7 @@ import com.jeulog.request.Login;
 import com.jeulog.request.SignUp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +38,19 @@ public class AuthService {
             throw new AlreadyExistsEmailException();
         }
 
+        SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(
+                16,
+                8,
+                1,
+                32,
+                64);
+
+        String encryptedPassword = encoder.encode(signup.getPassword());
+        // log.info("encryptedPassword:{}", encryptedPassword);
+
         User user = User.builder()
                 .name(signup.getName())
-                .password(signup.getPassword())
+                .password(encryptedPassword)
                 .email(signup.getEmail())
                 .build();
         userRepository.save(user);
