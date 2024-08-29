@@ -1,21 +1,16 @@
 package com.jeulog.service;
 
-import com.jeulog.domain.Session;
 import com.jeulog.domain.User;
 import com.jeulog.exception.AlreadyExistsEmailException;
-import com.jeulog.exception.InvalidRequest;
 import com.jeulog.exception.InvalidSignInformation;
-import com.jeulog.exception.Unauthorized;
 import com.jeulog.repository.UserRepository;
 import com.jeulog.request.Login;
 import com.jeulog.request.SignUp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import com.jeulog.crypto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.rmi.AlreadyBoundException;
 import java.util.Optional;
 
 @Slf4j
@@ -25,9 +20,12 @@ public class AuthService {
     private final UserRepository userRepository;
     @Transactional
     public Long login(Login login){
-        log.info("AuthService");
-        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+        User user = userRepository.findByEmail(login.getEmail())
                        .orElseThrow(InvalidSignInformation::new);
+
+
+        boolean matches = PasswordEncoder.matches(login.getPassword(), user.getPassword());
+        if(!matches) throw new InvalidSignInformation(); // TODO 이때 '비밀번호가 틀렸습니다'라고 클라이언트에게 알려야할까?
 
         return user.getId();
     }
@@ -38,15 +36,7 @@ public class AuthService {
             throw new AlreadyExistsEmailException();
         }
 
-        SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(
-                16,
-                8,
-                1,
-                32,
-                64);
-
-        String encryptedPassword = encoder.encode(signup.getPassword());
-        // log.info("encryptedPassword:{}", encryptedPassword);
+        String encryptedPassword = PasswordEncoder.encode(signup.getPassword());
 
         User user = User.builder()
                 .name(signup.getName())
