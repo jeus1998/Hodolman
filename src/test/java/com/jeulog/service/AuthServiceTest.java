@@ -33,8 +33,10 @@ class AuthServiceTest {
         // then
         assertThat(userRepository.count()).isEqualTo(1);
         assertThat(userRepository.findAll())
-                .extracting(User::getId, User::getEmail, User::getPassword, User::getName)
-                .containsExactly(tuple(1L, "baejeu@naver.com", "1234", "jeu"));
+                .extracting(User::getId, User::getEmail, User::getName)
+                .containsExactly(tuple(1L, "baejeu@naver.com", "jeu"));
+        // 암호화 체크
+        assertThat(userRepository.findAll().get(0).getPassword()).isNotEqualTo("1234");
     }
     @Test
     @DisplayName("회원가입시 중복된 이메일은 실패")
