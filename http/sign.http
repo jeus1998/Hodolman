@@ -1,0 +1,8 @@
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+  "name": "baejeu",
+  "email": "baejeu@naver.com",
+  "password": "1234"
+}
