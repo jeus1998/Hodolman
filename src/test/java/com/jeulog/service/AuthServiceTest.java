@@ -1,8 +1,11 @@
 package com.jeulog.service;
 
+import com.jeulog.crypto.PasswordEncoder;
 import com.jeulog.domain.User;
 import com.jeulog.exception.AlreadyExistsEmailException;
+import com.jeulog.exception.InvalidSignInformation;
 import com.jeulog.repository.UserRepository;
+import com.jeulog.request.Login;
 import com.jeulog.request.SignUp;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,5 +63,48 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.signUp(signUp))
                 .isInstanceOf(AlreadyExistsEmailException.class);
     }
+    @Test
+    @DisplayName("로그인 성공")
+    void test3(){
+        // given
+        String encodedPassword = PasswordEncoder.encode("1234");
+        User user = User.builder()
+                .name("jeu")
+                .email("baejeu@naver.com")
+                .password(encodedPassword)
+                .build();
 
+        userRepository.save(user);
+
+        Login login = Login.builder()
+                .email("baejeu@naver.com")
+                .password("1234")
+                .build();
+
+        // when
+        Long userId = authService.login(login);
+
+        // then
+        assertThat(userId).isNotNull();
+    }
+    @Test
+    @DisplayName("틀린 비밀번호 입력")
+    void test4(){
+        // given
+        SignUp signUp = SignUp.builder()
+                        .name("jeu")
+                        .email("baejeu@naver.com")
+                        .password("1234")
+                        .build();
+        authService.signUp(signUp);
+
+        Login login = Login.builder()
+                .email("baejeu@naver.com")
+                .password("123456")
+                .build();
+
+        // expected
+        assertThatThrownBy(()-> authService.login(login))
+                .isInstanceOf(InvalidSignInformation.class);
+    }
 }
