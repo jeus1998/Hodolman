@@ -28,6 +28,7 @@ repositories {
 dependencies {
     // 비밀번호 암호화 라이브러리
     implementation 'org.springframework.security:spring-security-crypto'
+    implementation 'org.bouncycastlebcprov-jdk15on:1.70'
 
     // Spring REST Docks
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor' // 3
