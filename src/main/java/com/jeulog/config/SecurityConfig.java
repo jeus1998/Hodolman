@@ -44,6 +44,11 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/")
                 )
                 .userDetailsService(userDetailService())
+                .rememberMe(rm -> rm
+                                        .rememberMeParameter("remember")
+                                        .alwaysRemember(false) // default: false 사용자가 체크박스를 활성화하지 않아도 항상 실행
+                                        .tokenValiditySeconds(2592000)
+                                )
                 .build();
     }
     @Bean
