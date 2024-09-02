@@ -25,6 +25,15 @@ spring:
       pageable:
         one-indexed-parameters: true # 페이지 1부터 시작
         default-page-size: 5
+  session:
+    timeout: 3600
+
+server:
+  servlet:
+    session:
+      cookie:
+        max-age: 3600
+
 logging:
   level:
     org.hibernate:SQL: debug # SQL 쿼리 로그 출력
