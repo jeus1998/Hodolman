@@ -1,7 +1,12 @@
 package com.jeulog.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jeulog.config.handler.Http401Handler;
+import com.jeulog.config.handler.Http403Handler;
+import com.jeulog.config.handler.LoginFailHandler;
 import com.jeulog.domain.User;
 import com.jeulog.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,13 +18,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
-
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @Configuration
 @EnableWebSecurity(debug = true) // todo: 운영 환경에서는 사용 금지
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final ObjectMapper objectMapper;
     @Bean // 함수형 인터페이스
     public WebSecurityCustomizer webSecurityCustomizer(){
         return web -> {
@@ -37,12 +42,8 @@ public class SecurityConfig {
                         authorize -> authorize
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/signup").permitAll()
-                        .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
-                        // .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/admin").access(
-                               new WebExpressionAuthorizationManager(
-                                       "hasRole('ADMIN') AND hasAuthority('WRITE')")
-                                )
+                        .requestMatchers("/user").hasRole("USER")
+                        .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable) // todo: csrf? 공부하기 or (csrf -> csrf.disable())
                 .formLogin(login -> login
@@ -51,11 +52,16 @@ public class SecurityConfig {
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .defaultSuccessUrl("/")
+                        .failureHandler(new LoginFailHandler(objectMapper))
                 )
                 .rememberMe(rm -> rm
                             .rememberMeParameter("remember")
                             .alwaysRemember(false) // default: false 사용자가 체크박스를 활성화하지 않아도 항상 실행
                             .tokenValiditySeconds(2592000))
+                .exceptionHandling(e -> {
+                    e.accessDeniedHandler(new Http403Handler(objectMapper));
+                    e.authenticationEntryPoint(new Http401Handler(objectMapper));
+                })
                 .build();
     }
     @Bean
