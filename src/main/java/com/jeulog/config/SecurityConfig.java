@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @Configuration
@@ -35,6 +37,12 @@ public class SecurityConfig {
                         authorize -> authorize
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/signup").permitAll()
+                        .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
+                        // .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/admin").access(
+                               new WebExpressionAuthorizationManager(
+                                       "hasRole('ADMIN') AND hasAuthority('WRITE')")
+                                )
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable) // todo: csrf? 공부하기 or (csrf -> csrf.disable())
                 .formLogin(login -> login
